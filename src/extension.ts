@@ -1,4 +1,8 @@
-import { MoosyncExtensionTemplate, Song } from "@moosync/moosync-types"
+import {
+  MoosyncExtensionTemplate,
+  Playlist,
+  Song,
+} from "@moosync/moosync-types"
 import axios from "axios"
 import adapter from "axios/lib/adapters/http"
 import semver from "semver"
@@ -15,7 +19,8 @@ export class MyExtension implements MoosyncExtensionTemplate {
     this.token = await api.getPreferences<string>("plex_token", "")
     logger.info("Plex extension started")
     if (semver.satisfies(process.env.MOOSYNC_VERSION, ">=1.3.0")) {
-      await this.scanPlex()
+      this.registerListeners()
+      // await this.scanPlex()
     }
   }
 
@@ -100,6 +105,43 @@ export class MyExtension implements MoosyncExtensionTemplate {
     return albums
   }
 
+  private async getPlaylists() {
+    const resp = await this.axios.get<AllPlaylists>(
+      `${this.baseURL}/playlists?X-Plex-Token=${this.token}`
+    )
+
+    const playlists: ExtendedMoosyncPlaylist[] = []
+    for (const p of resp.data.MediaContainer.Metadata) {
+      if (p.type === "playlist") {
+        playlists.push({
+          playlist_id: Buffer.from(p.key).toString("base64"),
+          playlist_name: p.title,
+          playlist_coverPath: p.composite,
+          plexKey: p.key,
+        })
+      }
+    }
+    return playlists
+  }
+
+  private async getPlaylistContent(playlistId: string) {
+    console.log(playlistId)
+    const parsedKey = Buffer.from(playlistId, "base64").toString("utf-8")
+    console.log(parsedKey)
+    const resp = await this.axios.get<AllTracks>(
+      `${this.baseURL}${parsedKey}?X-Plex-Token=${this.token}`
+    )
+
+    const songs: Song[] = []
+    for (const s of resp.data.MediaContainer.Metadata) {
+      if (s.type === "track") {
+        songs.push(this.parseSong(s))
+      }
+    }
+
+    return songs
+  }
+
   private async getAlbumSongs(key: string) {
     const resp = await this.axios.get<AllTracks>(this.resolveURL(key))
     return resp.data
@@ -129,6 +171,23 @@ export class MyExtension implements MoosyncExtensionTemplate {
       }
     }
     return undefined
+  }
+
+  private registerListeners() {
+    api.on("get-playlists", async () => {
+      const playlists = await this.getPlaylists()
+      return {
+        playlists,
+      }
+    })
+
+    api.on("get-playlist-songs", async (playlist_id) => {
+      const songs = await this.getPlaylistContent(playlist_id)
+
+      return {
+        songs,
+      }
+    })
   }
 
   async onPreferenceChanged({
