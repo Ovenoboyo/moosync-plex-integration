@@ -64,7 +64,6 @@ export class MyExtension implements MoosyncExtensionTemplate {
   }
 
   private async getLibraries() {
-    console.log(`${this.baseURL}/library/sections?X-Plex-Token=${this.token}`)
     const resp = await this.axios.get<PlexLibraries>(
       `${this.baseURL}/library/sections?X-Plex-Token=${this.token}`
     )
@@ -125,9 +124,7 @@ export class MyExtension implements MoosyncExtensionTemplate {
   }
 
   private async getPlaylistContent(playlistId: string) {
-    console.log(playlistId)
     const parsedKey = Buffer.from(playlistId, "base64").toString("utf-8")
-    console.log(parsedKey)
     const resp = await this.axios.get<AllTracks>(
       `${this.baseURL}${parsedKey}?X-Plex-Token=${this.token}`
     )
@@ -197,7 +194,6 @@ export class MyExtension implements MoosyncExtensionTemplate {
     key: string
     value: any
   }): Promise<void> {
-    console.log(key, value)
     if (key === "plex_url") {
       this.baseURL = value
     }
