@@ -20,7 +20,7 @@ export class MyExtension implements MoosyncExtensionTemplate {
     logger.info("Plex extension started")
     if (semver.satisfies(process.env.MOOSYNC_VERSION, ">=1.3.0")) {
       this.registerListeners()
-      // await this.scanPlex()
+      await this.scanPlex()
     }
   }
 
