@@ -1,4 +1,4 @@
-declare const api: import("@moosync/moosync-types").extensionAPI
+declare const api: import('@moosync/moosync-types').extensionAPI
 declare const logger: {
   log: Function
   error: Function
@@ -33,13 +33,13 @@ interface AllArtists {
 
 interface PlaylistMetadata {
   key: string
-  type: "playlist"
+  type: 'playlist'
   title: string
   guid: string
   composite: string
 }
 
-type MoosyncPlaylist = import("@moosync/moosync-types").Playlist
+type MoosyncPlaylist = import('@moosync/moosync-types').Playlist
 interface ExtendedMoosyncPlaylist extends MoosyncPlaylist {
   plexKey: string
 }
