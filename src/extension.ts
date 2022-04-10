@@ -161,14 +161,14 @@ export class MyExtension implements MoosyncExtensionTemplate {
   }
 
   private registerListeners() {
-    api.on('get-playlists', async () => {
+    api.on('requestedPlaylists', async () => {
       const playlists = await this.getPlaylists()
       return {
         playlists
       }
     })
 
-    api.on('get-playlist-songs', async (playlist_id) => {
+    api.on('requestedPlaylistSongs', async (playlist_id) => {
       const songs = await this.getPlaylistContent(playlist_id)
 
       return {
