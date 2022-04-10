@@ -175,9 +175,11 @@ export class MyExtension implements MoosyncExtensionTemplate {
         songs
       }
     })
+
+    api.on('preferenceChanged', this.onPreferenceChanged.bind(this))
   }
 
-  async onPreferenceChanged({ key, value }: { key: string; value: any }): Promise<void> {
+  private async onPreferenceChanged({ key, value }: { key: string; value: any }): Promise<void> {
     if (key === 'plex_url') {
       this.baseURL = value
     }
