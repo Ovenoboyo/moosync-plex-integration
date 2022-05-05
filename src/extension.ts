@@ -145,7 +145,7 @@ export class MyExtension implements MoosyncExtensionTemplate {
         title: track.title,
         date_added: track.addedAt * 1000,
         duration: track.duration / 1000,
-        artists: [track.grandparentTitle],
+        artists: [{ artist_id: `emby-artist:${track.grandparentTitle}`, artist_name: track.grandparentTitle }],
         album: {
           album_name: track.parentTitle,
           album_coverPath_high: this.resolveURL(track.parentThumb),
