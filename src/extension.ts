@@ -12,6 +12,10 @@ export class MyExtension implements MoosyncExtensionTemplate {
 
   async onStarted() {
     this.baseURL = await api.getPreferences<string>('plex_url', '')
+    if (this.baseURL.endsWith('/')) {
+      this.baseURL = this.baseURL.substring(0, -1)
+    }
+
     this.token = await api.getPreferences<string>('plex_token', '')
     logger.info('Plex extension started')
     if (semver.satisfies(process.env.MOOSYNC_VERSION, '>=1.3.0')) {
@@ -105,9 +109,9 @@ export class MyExtension implements MoosyncExtensionTemplate {
     for (const p of resp.data.MediaContainer.Metadata) {
       if (p.type === 'playlist') {
         playlists.push({
-          playlist_id: Buffer.from(p.key).toString('base64'),
+          playlist_id: p.key,
           playlist_name: p.title,
-          playlist_coverPath: p.composite,
+          playlist_coverPath: `${this.baseURL}${p.composite}?X-Plex-Token=${this.token}`,
           plexKey: p.key
         })
       }
@@ -182,6 +186,9 @@ export class MyExtension implements MoosyncExtensionTemplate {
   private async onPreferenceChanged({ key, value }: { key: string; value: any }): Promise<void> {
     if (key === 'plex_url') {
       this.baseURL = value
+      if (this.baseURL.endsWith('/')) {
+        this.baseURL = this.baseURL.substring(0, -1)
+      }
     }
 
     if (key === 'plex_token') {
