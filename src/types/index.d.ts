@@ -1,5 +1,12 @@
 declare const api: import("@moosync/moosync-types").extensionAPI
-declare const logger: { log: Function, error: Function, info: Function, warn: Function, trace: Function, debug: Function }
+declare const logger: {
+  log: Function
+  error: Function
+  info: Function
+  warn: Function
+  trace: Function
+  debug: Function
+}
 
 interface DirectoryGroup {
   type: string
@@ -38,7 +45,7 @@ interface TrackMetadata {
   duration: number
   Media: {
     audioCodec: string
-    container: string,
+    container: string
     Part: {
       duration: number
       size: number
