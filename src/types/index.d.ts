@@ -25,8 +25,27 @@ interface ArtistMetadata {
 }
 
 interface AllArtists {
-  MediaContainer?: {
+  MediaContainer: {
     Metadata: ArtistMetadata[]
+  }
+}
+
+interface PlaylistMetadata {
+  key: string
+  type: 'playlist'
+  title: string
+  guid: string
+  composite: string
+}
+
+type MoosyncPlaylist = import('@moosync/moosync-types').Playlist
+interface ExtendedMoosyncPlaylist extends MoosyncPlaylist {
+  plexKey: string
+}
+
+interface AllPlaylists {
+  MediaContainer: {
+    Metadata: PlaylistMetadata[]
   }
 }
 
