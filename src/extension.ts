@@ -198,7 +198,7 @@ export class MyExtension implements MoosyncExtensionTemplate {
     if (semver.satisfies(process.env.MOOSYNC_VERSION, '>=1.3.0')) {
       const existingSongs = await api.getSongs({ song: { extension: true } })
       for (const s of existingSongs) {
-        await api.removeSong(s._id)
+        await api.removeSong(s)
       }
 
       await this.scanPlex()
