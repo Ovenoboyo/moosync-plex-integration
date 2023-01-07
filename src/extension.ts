@@ -116,7 +116,12 @@ export class MyExtension implements MoosyncExtensionTemplate {
         title: track.title,
         date_added: track.addedAt * 1000,
         duration: track.duration / 1000,
-        artists: [track.grandparentTitle],
+        artists: [
+          {
+            artist_id: "",
+            artist_name: track.grandparentTitle,
+          },
+        ],
         album: {
           album_name: track.parentTitle,
           album_coverPath_high: this.resolveURL(track.parentThumb),
@@ -138,7 +143,6 @@ export class MyExtension implements MoosyncExtensionTemplate {
     key: string
     value: any
   }): Promise<void> {
-    console.log(key, value)
     if (key === "plex_url") {
       this.baseURL = value
     }
